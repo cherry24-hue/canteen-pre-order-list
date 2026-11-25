@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CanteenFreeOrder | Student Food Ordering</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f6f4fa;
+    color: #292238;
+}
+
+header {
+    background: #4b287f;
+    color: white;
+    padding: 22px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+}
+
+header span {
+    font-size: 13px;
+    opacity: .85;
+}
+
+.hero {
+    background: linear-gradient(120deg, #4b287f, #8052b8);
+    color: white;
+    padding: 48px 7%;
+}
+
+.hero h1 {
+    font-size: 34px;
+    margin-bottom: 12px;
+}
+
+.hero p {
+    max-width: 550px;
+    line-height: 1.6;
+    color: #eee5ff;
+}
+
+.container {
+    max-width: 1150px;
+    margin: 35px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    margin-bottom: 18px;
+}
+
+.section-title h2 {
+    color: #39205f;
+    margin-bottom: 6px;
+}
+
+.section-title p {
+    color: #81788e;
+    font-size: 14px;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.food-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    box-shadow: 0 5px 18px rgba(45, 24, 70, .07);
+    cursor: pointer;
+    transition: .2s;
+}
+
+.food-card:hover {
+    transform: translateY(-4px);
+}
+
+.food-card.selected {
+    border-color: #7544b5;
+    box-shadow: 0 5px 20px rgba(117, 68, 181, .2);
+}
+
+.food-card img {
+    width: 100%;
+    height: 155px;
+    object-fit: cover;
+}
+
+.food-info {
+    padding: 15px;
+}
+
+.food-info h3 {
+    margin-bottom: 8px;
+    color: #39205f;
+}
+
+.food-info p {
+    color: #7952a7;
+    font-weight: bold;
+}
+
+.select-label {
+    display: block;
+    margin-top: 10px;
+    color: #8a7e98;
+    font-size: 12px;
+}
+
+.order-layout {
+    display: grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: 22px;
+    margin-top: 35px;
+}
+
+.panel {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 5px 18px rgba(45, 24, 70, .07);
+}
+
+.panel h2 {
+    color: #39205f;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 15px 0 7px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input, select {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #ded7e8;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+input:focus, select:focus {
+    border-color: #7544b5;
+}
+
+button {
+    cursor: pointer;
+}
+
+.submit-btn {
+    width: 100%;
+    margin-top: 22px;
+    padding: 15px;
+    background: #7544b5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.submit-btn:hover {
+    background: #5b3194;
+}
+
+.cancel-edit {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: #eee5fa;
+    color: #633a98;
+    border: none;
+    border-radius: 9px;
+    font-weight: bold;
+    display: none;
+}
+
+.summary-box {
+    background: #f5f0fb;
+    padding: 17px;
+    border-radius: 12px;
+    line-height: 2;
+    margin-bottom: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.summary-row strong {
+    color: #542c86;
+}
+
+.total {
+    border-top: 1px solid #ded2ed;
+    padding-top: 10px;
+    margin-top: 8px;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.orders {
+    margin-top: 35px;
+}
+
+.order-item {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 12px;
+    box-shadow: 0 3px 12px rgba(45, 24, 70, .05);
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.order-info p {
+    margin-top: 7px;
+    font-size: 14px;
+    color: #81788e;
+}
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.status.pending {
+    background: #fff0d5;
+    color: #9b6412;
+}
+
+.status.processing {
+    background: #e5edff;
+    color: #345caa;
+}
+
+.status.completed {
+    background: #e3f5e9;
+    color: #267746;
+}
+
+.status.cancelled {
+    background: #ffe8e8;
+    color: #bd3838;
+}
+
+.order-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.edit-btn {
+    background: #eee5fa;
+    color: #633a98;
+}
+
+.delete-btn {
+    background: #ffe8e8;
+    color: #bd3838;
+}
+
+.edit-btn:hover {
+    background: #dfcff3;
+}
+
+.delete-btn:hover {
+    background: #ffd5d5;
+}
+
+.empty {
+    color: #8a7e98;
+    font-size: 14px;
+    padding: 15px 0;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #897e97;
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+/* POPUP */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(25, 12, 43, .65);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.success-modal, .confirm-modal {
+    background: white;
+    width: 100%;
+    max-width: 410px;
+    padding: 30px 25px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0,0,0,.2);
+    animation: popup .25s ease;
+}
+
+@keyframes popup {
+    from { opacity: 0; transform: translateY(20px) scale(.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.success-icon {
+    width: 76px;
+    height: 76px;
+    background: #eee5fa;
+    color: #7544b5;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0 auto 18px;
+}
+
+.success-modal h2, .confirm-modal h2 {
+    color: #4b287f;
+    margin-bottom: 10px;
+}
+
+.success-modal p, .confirm-modal p {
+    color: #81788e;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.modal-details {
+    background: #f6f2fb;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.modal-details div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 9px 0;
+    font-size: 13px;
+}
+
+.modal-details strong {
+    color: #542c86;
+    text-align: right;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 14px;
+    background: #7544b5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.confirm-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.cancel-btn {
+    background: #eee5fa;
+    color: #633a98;
+}
+
+.confirm-delete-btn {
+    background: #bd3838;
+    color: white;
+}
+
+@media(max-width: 700px) {
+    .order-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 27px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">🍽 CanteenFreeOrder</div>
+    <span>Student Food Pre-Ordering System</span>
+</header>
+
+<section class="hero">
+    <h1>Order Ahead. Enjoy Your Break.</h1>
+    <p>
+        Skip the long waiting line. Choose your favorite canteen food,
+        submit your pre-order, and pick it up during your break time.
+    </p>
+</section>
+
+<main class="container">
+
+<section>
+    <div class="section-title">
+        <h2>Our Food Menu</h2>
+        <p>Select your favorite food from the available menu.</p>
+    </div>
+    <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+<section class="order-layout">
+
+    <div class="panel">
+        <h2 id="formTitle">📝 Place Your Order</h2>
+
+        <form id="orderForm">
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName"
+                placeholder="Enter your full name" required>
+
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity"
+                min="1" max="50" value="1" required>
+
+            <label for="pickupDate">Pickup Date</label>
+            <input type="date" id="pickupDate" required>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Submit Pre-Order →
+            </button>
+
+            <button type="button" class="cancel-edit" id="cancelEditBtn"
+                onclick="cancelEdit()">
+                Cancel Editing
+            </button>
+        </form>
+    </div>
+
+    <div class="panel">
+        <h2>🛒 Order Summary</h2>
+
+        <div class="summary-box">
+            <div class="summary-row">
+                <span>Selected Food</span>
+                <strong id="summaryFood">None</strong>
+            </div>
+            <div class="summary-row">
+                <span>Price</span>
+                <strong id="summaryPrice">₱0.00</strong>
+            </div>
+            <div class="summary-row">
+                <span>Quantity</span>
+                <strong id="summaryQuantity">1</strong>
+            </div>
+            <div class="summary-row total">
+                <span>Total Amount</span>
+                <strong id="summaryTotal">₱0.00</strong>
+            </div>
+        </div>
+
+        <p style="font-size:13px;color:#81788e;line-height:1.6;">
+            Please review your selected food and order details
+            before submitting.
+        </p>
+    </div>
+
+</section>
+
+<section class="orders">
+    <div class="section-title">
+        <h2>📋 My Submitted Orders</h2>
+        <p>Your saved pre-orders will appear here.</p>
+    </div>
+    <div id="ordersList"></div>
+</section>
+
+</main>
+
+<footer>
+    CanteenFreeOrder © 2026 | Student Food Pre-Ordering System
+</footer>
+
+<!-- SUCCESS POPUP -->
+<div class="modal-overlay" id="successModal">
+    <div class="success-modal">
+        <div class="success-icon">✓</div>
+        <h2 id="successTitle">Order Submitted!</h2>
+        <p id="successMessage">Your pre-order has been successfully placed.</p>
+
+        <div class="modal-details">
+            <div><span>Food Item</span><strong id="modalFood">-</strong></div>
+            <div><span>Quantity</span><strong id="modalQuantity">-</strong></div>
+            <div><span>Total Amount</span><strong id="modalTotal">-</strong></div>
+            <div><span>Order Status</span><strong>Pending</strong></div>
+        </div>
+
+        <button class="modal-btn" onclick="closeSuccessModal()">
+            Continue Ordering
+        </button>
+    </div>
+</div>
+
+<!-- CANCEL ORDER CONFIRMATION -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="confirm-modal">
+        <h2>Cancel Order?</h2>
+        <p>Are you sure you want to cancel this pending order?</p>
+
+        <div class="confirm-actions">
+            <button class="cancel-btn" onclick="closeCancelModal()">
+                Keep Order
+            </button>
+            <button class="confirm-delete-btn" onclick="confirmCancelOrder()">
+                Yes, Cancel
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+const foods = [
+    { id: 1, name: "Fried Chicken Rice", price: 65,
+      image: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=600" },
+    { id: 2, name: "Burger", price: 45,
+      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600" },
+    { id: 3, name: "Siomai Rice", price: 40,
+      image: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=600" },
+    { id: 4, name: "Pancit", price: 50,
+      image: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=600" },
+    { id: 5, name: "Sandwich", price: 35,
+      image: "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600" },
+    { id: 6, name: "Juice", price: 20,
+      image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600" }
+];
+
+let selectedFood = null;
+let editingOrderId = null;
+let cancellingOrderId = null;
+
+let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
+
+// Keep compatibility with orders saved by the earlier version.
+orders = orders.map(order => ({
+    ...order,
+    id: order.id || Date.now() + Math.random(),
+    status: order.status || "Pending"
+}));
+
+const menuGrid = document.getElementById("menuGrid");
+const quantityInput = document.getElementById("quantity");
+const pickupDateInput = document.getElementById("pickupDate");
+
+function saveOrders() {
+    localStorage.setItem("canteenOrders", JSON.stringify(orders));
+}
+
+function displayMenu() {
+    menuGrid.innerHTML = "";
+
+    foods.forEach(food => {
+        const card = document.createElement("div");
+        card.className = "food-card" +
+            (selectedFood && selectedFood.id === food.id ? " selected" : "");
+
+        const img = document.createElement("img");
+        img.src = food.image;
+        img.alt = food.name;
+
+        const info = document.createElement("div");
+        info.className = "food-info";
+
+        const title = document.createElement("h3");
+        title.textContent = food.name;
+
+        const price = document.createElement("p");
+        price.textContent = "₱" + food.price.toFixed(2);
+
+        const hint = document.createElement("span");
+        hint.className = "select-label";
+        hint.textContent = "Click to select";
+
+        info.append(title, price, hint);
+        card.append(img, info);
+
+        card.addEventListener("click", () => {
+            selectedFood = food;
+            displayMenu();
+            updateSummary();
+        });
+
+        menuGrid.appendChild(card);
+    });
+}
+
+function updateSummary() {
+    const quantity = Number(quantityInput.value) || 1;
+
+    document.getElementById("summaryFood").textContent =
+        selectedFood ? selectedFood.name : "None";
+
+    document.getElementById("summaryPrice").textContent =
+        selectedFood ? "₱" + selectedFood.price.toFixed(2) : "₱0.00";
+
+    document.getElementById("summaryQuantity").textContent = quantity;
+
+    const total = selectedFood ? selectedFood.price * quantity : 0;
+
+    document.getElementById("summaryTotal").textContent =
+        "₱" + total.toFixed(2);
+}
+
+quantityInput.addEventListener("input", updateSummary);
+
+// READ: DISPLAY ORDERS
+function displayOrders() {
+    const ordersList = document.getElementById("ordersList");
+    ordersList.innerHTML = "";
+
+    if (orders.length === 0) {
+        ordersList.innerHTML =
+            '<p class="empty">No orders submitted yet.</p>';
+        return;
+    }
+
+    orders.forEach(order => {
+        const item = document.createElement("div");
+        item.className = "order-item";
+
+        const info = document.createElement("div");
+        info.className = "order-info";
+
+        const name = document.createElement("strong");
+        name.textContent = order.student;
+
+        const food = document.createElement("p");
+        food.textContent = order.food + " × " + order.quantity;
+
+        const date = document.createElement("p");
+        date.textContent = "Pickup: " + order.date;
+
+        const total = document.createElement("p");
+        total.textContent = "Total: ₱" + order.total.toFixed(2);
+
+        const status = document.createElement("span");
+        status.className = "status " + order.status.toLowerCase();
+        status.textContent = order.status;
+
+        info.append(name, food, date, total, status);
+
+        item.appendChild(info);
+
+        const actions = document.createElement("div");
+        actions.className = "order-actions";
+
+        // Only pending orders can be edited or cancelled.
+        if (order.status === "Pending") {
+            const editButton = document.createElement("button");
+            editButton.className = "edit-btn";
+            editButton.textContent = "✏ Edit";
+            editButton.addEventListener("click", () => editOrder(order.id));
+
+            const cancelButton = document.createElement("button");
+            cancelButton.className = "delete-btn";
+            cancelButton.textContent = "Cancel Order";
+            cancelButton.addEventListener("click", () => cancelOrder(order.id));
+
+            actions.append(editButton, cancelButton);
+        }
+
+        item.appendChild(actions);
+        ordersList.appendChild(item);
+    });
+}
+
+// CREATE: ADD ORDER / UPDATE: SAVE EDIT
+document.getElementById("orderForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const student = document.getElementById("studentName").value.trim();
+    const quantity = Number(quantityInput.value);
+    const date = pickupDateInput.value;
+
+    if (!student) {
+        alert("Please enter your student name.");
+        return;
+    }
+
+    if (!selectedFood) {
+        alert("Please select a food item from the menu.");
+        return;
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
+        alert("Please enter a quantity between 1 and 50.");
+        return;
+    }
+
+    if (!date) {
+        alert("Please select a pickup date.");
+        return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (new Date(date + "T00:00:00") < today) {
+        alert("Pickup date cannot be in the past.");
+        return;
+    }
+
+    const newOrder = {
+        id: editingOrderId !== null ? editingOrderId : Date.now(),
+        student: student,
+        food: selectedFood.name,
+        quantity: quantity,
+        date: date,
+        total: selectedFood.price * quantity,
+        status: "Pending"
+    };
+
+    if (editingOrderId !== null) {
+        const index = orders.findIndex(order => order.id === editingOrderId);
+
+        if (index === -1 || orders[index].status !== "Pending") {
+            alert("Only pending orders can be edited.");
+            resetForm();
+            return;
+        }
+
+        orders[index] = newOrder;
+        document.getElementById("successTitle").textContent = "Order Updated!";
+        document.getElementById("successMessage").textContent =
+            "Your pending order has been successfully updated.";
+    } else {
+        orders.push(newOrder);
+        document.getElementById("successTitle").textContent = "Order Submitted!";
+        document.getElementById("successMessage").textContent =
+            "Your pre-order has been successfully placed.";
+    }
+
+    saveOrders();
+
+    document.getElementById("modalFood").textContent = newOrder.food;
+    document.getElementById("modalQuantity").textContent = newOrder.quantity;
+    document.getElementById("modalTotal").textContent =
+        "₱" + newOrder.total.toFixed(2);
+
+    document.getElementById("successModal").classList.add("show");
+
+    resetForm();
+    displayOrders();
+});
+
+// UPDATE: LOAD PENDING ORDER INTO FORM
+function editOrder(id) {
+    const order = orders.find(item => item.id === id);
+
+    if (!order || order.status !== "Pending") {
+        alert("Only pending orders can be edited.");
+        return;
+    }
+
+    editingOrderId = id;
+
+    document.getElementById("studentName").value = order.student;
+    quantityInput.value = order.quantity;
+    pickupDateInput.value = order.date;
+
+    selectedFood = foods.find(food => food.name === order.food) || null;
+
+    document.getElementById("formTitle").textContent = "✏ Edit Your Order";
+    document.getElementById("submitBtn").textContent = "Update Order →";
+    document.getElementById("cancelEditBtn").style.display = "block";
+
+    displayMenu();
+    updateSummary();
+
+    document.getElementById("orderForm").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+// CANCEL ORDER: ASK FOR CONFIRMATION
+function cancelOrder(id) {
+    const order = orders.find(item => item.id === id);
+
+    if (!order || order.status !== "Pending") {
+        alert("Only pending orders can be cancelled.");
+        return;
+    }
+
+    cancellingOrderId = id;
+    document.getElementById("cancelModal").classList.add("show");
+}
+
+// CANCEL ORDER: UPDATE STATUS, KEEP ORDER HISTORY
+function confirmCancelOrder() {
+    const order = orders.find(item => item.id === cancellingOrderId);
+
+    if (!order || order.status !== "Pending") {
+        closeCancelModal();
+        return;
+    }
+
+    order.status = "Cancelled";
+
+    saveOrders();
+    displayOrders();
+
+    if (editingOrderId === order.id) {
+        resetForm();
+    }
+
+    closeCancelModal();
+}
+
+function closeCancelModal() {
+    document.getElementById("cancelModal").classList.remove("show");
+    cancellingOrderId = null;
+}
+
+// RESET FORM
+function resetForm() {
+    document.getElementById("orderForm").reset();
+
+    quantityInput.value = 1;
+    selectedFood = null;
+    editingOrderId = null;
+
+    document.getElementById("formTitle").textContent = "📝 Place Your Order";
+    document.getElementById("submitBtn").textContent = "Submit Pre-Order →";
+    document.getElementById("cancelEditBtn").style.display = "none";
+
+    displayMenu();
+    updateSummary();
+}
+
+function cancelEdit() {
+    resetForm();
+}
+
+function closeSuccessModal() {
+    document.getElementById("successModal").classList.remove("show");
+}
+
+// INITIAL DISPLAY
+saveOrders();
+displayMenu();
+displayOrders();
+updateSummary();
+</script>
+
+</body>
+</html>
