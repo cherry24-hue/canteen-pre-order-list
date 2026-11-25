@@ -55,3 +55,8 @@ Orders are stored in the current browser and device under the `canteenOrders` lo
 | 9 | Keep pending order | Choose Cancel Order, then Keep Order | Confirmation closes and order remains pending |
 | 10 | Confirm cancellation | Choose Cancel Order, then Yes, Cancel | Order changes to Cancelled; edit/cancel controls are removed |
 | 11 | Responsive layout | Open at mobile and desktop viewport widths | Content stays readable; form and summary stack at narrow widths |
+## Prompt Log
+[View My Prompt Log](prompt_log.md)
+
+## Live Website
+[Open My Canteen Website](https://cherry24-hue.github.io/canteen-pre-order-list/)
