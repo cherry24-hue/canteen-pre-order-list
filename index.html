@@ -6,6 +6,16 @@
 <title>CanteenFreeOrder | Student Food Ordering</title>
 
 <style>
+:root {
+    color-scheme: light;
+    --purple: #4b287f;
+    --purple-deep: #39205f;
+    --purple-bright: #7544b5;
+    --purple-soft: #f5f0fb;
+    --ink: #292238;
+    --muted: #81788e;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -14,14 +24,15 @@
 }
 
 body {
-    background: #f6f4fa;
-    color: #292238;
+    background: #f7f5fa;
+    color: var(--ink);
+    min-height: 100vh;
 }
 
 header {
-    background: #4b287f;
+    background: var(--purple);
     color: white;
-    padding: 22px 7%;
+    padding: 18px max(7%, calc((100% - 1150px) / 2));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -32,6 +43,7 @@ header {
 .logo {
     font-size: 23px;
     font-weight: bold;
+    letter-spacing: -.5px;
 }
 
 header span {
@@ -40,9 +52,11 @@ header span {
 }
 
 .hero {
-    background: linear-gradient(120deg, #4b287f, #8052b8);
+    background:
+        radial-gradient(circle at 85% 20%, rgba(255,255,255,.14), transparent 25%),
+        linear-gradient(120deg, #39205f, #8052b8);
     color: white;
-    padding: 48px 7%;
+    padding: 62px max(7%, calc((100% - 1150px) / 2));
 }
 
 .hero h1 {
@@ -56,6 +70,19 @@ header span {
     color: #eee5ff;
 }
 
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 15px;
+    padding: 7px 11px;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: 30px;
+    color: #f2eaff;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .container {
     max-width: 1150px;
     margin: 35px auto;
@@ -67,7 +94,7 @@ header span {
 }
 
 .section-title h2 {
-    color: #39205f;
+    color: var(--purple-deep);
     margin-bottom: 6px;
 }
 
@@ -89,7 +116,7 @@ header span {
     border: 2px solid transparent;
     box-shadow: 0 5px 18px rgba(45, 24, 70, .07);
     cursor: pointer;
-    transition: .2s;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
 .food-card:hover {
@@ -99,6 +126,13 @@ header span {
 .food-card.selected {
     border-color: #7544b5;
     box-shadow: 0 5px 20px rgba(117, 68, 181, .2);
+}
+
+.food-card:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid #bd9be8;
+    outline-offset: 3px;
 }
 
 .food-card img {
@@ -114,6 +148,10 @@ header span {
 .food-info h3 {
     margin-bottom: 8px;
     color: #39205f;
+}
+
+.food-info p {
+    font-size: 16px;
 }
 
 .food-info p {
@@ -165,11 +203,12 @@ input, select {
 }
 
 input:focus, select:focus {
-    border-color: #7544b5;
+    border-color: var(--purple-bright);
 }
 
 button {
     cursor: pointer;
+    font: inherit;
 }
 
 .submit-btn {
@@ -201,7 +240,7 @@ button {
 }
 
 .summary-box {
-    background: #f5f0fb;
+    background: var(--purple-soft);
     padding: 17px;
     border-radius: 12px;
     line-height: 2;
@@ -217,6 +256,10 @@ button {
 
 .summary-row strong {
     color: #542c86;
+}
+
+.summary-row span {
+    color: #645a70;
 }
 
 .total {
@@ -241,6 +284,7 @@ button {
     justify-content: space-between;
     gap: 15px;
     flex-wrap: wrap;
+    border: 1px solid #eee9f4;
 }
 
 .order-info p {
@@ -314,6 +358,27 @@ button {
     color: #8a7e98;
     font-size: 14px;
     padding: 15px 0;
+}
+
+.form-error {
+    min-height: 20px;
+    margin-top: 12px;
+    color: #bd3838;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.orders-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.orders-count {
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
 }
 
 footer {
@@ -438,12 +503,49 @@ footer {
 }
 
 @media(max-width: 700px) {
+    header {
+        padding: 17px 20px;
+    }
+
+    .hero {
+        padding: 44px 20px;
+    }
+
     .order-layout {
         grid-template-columns: 1fr;
     }
 
     .hero h1 {
-        font-size: 27px;
+        font-size: clamp(26px, 7vw, 34px);
+    }
+
+    .container {
+        margin-top: 26px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .orders-heading {
+        align-items: start;
+        flex-direction: column;
+    }
+
+    .order-actions {
+        width: 100%;
+    }
+
+    .order-actions button {
+        flex: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
     }
 }
 </style>
@@ -453,10 +555,11 @@ footer {
 
 <header>
     <div class="logo">🍽 CanteenFreeOrder</div>
-    <span>Student Food Pre-Ordering System</span>
+    <span>Made for your school community</span>
 </header>
 
 <section class="hero">
+    <div class="hero-tag">🥡 CANTEEN PRE-ORDERING</div>
     <h1>Order Ahead. Enjoy Your Break.</h1>
     <p>
         Skip the long waiting line. Choose your favorite canteen food,
@@ -479,17 +582,19 @@ footer {
     <div class="panel">
         <h2 id="formTitle">📝 Place Your Order</h2>
 
-        <form id="orderForm">
+        <form id="orderForm" novalidate>
             <label for="studentName">Student Name</label>
-            <input type="text" id="studentName"
-                placeholder="Enter your full name" required>
+            <input type="text" id="studentName" autocomplete="name"
+                placeholder="Enter your full name" maxlength="80" required>
 
             <label for="quantity">Quantity</label>
             <input type="number" id="quantity"
-                min="1" max="50" value="1" required>
+                min="1" max="50" step="1" value="1" required>
 
             <label for="pickupDate">Pickup Date</label>
             <input type="date" id="pickupDate" required>
+
+            <p class="form-error" id="formError" role="alert" aria-live="polite"></p>
 
             <button type="submit" class="submit-btn" id="submitBtn">
                 Submit Pre-Order →
@@ -505,7 +610,7 @@ footer {
     <div class="panel">
         <h2>🛒 Order Summary</h2>
 
-        <div class="summary-box">
+        <div class="summary-box" aria-live="polite">
             <div class="summary-row">
                 <span>Selected Food</span>
                 <strong id="summaryFood">None</strong>
@@ -517,6 +622,10 @@ footer {
             <div class="summary-row">
                 <span>Quantity</span>
                 <strong id="summaryQuantity">1</strong>
+            </div>
+            <div class="summary-row">
+                <span>Pickup Date</span>
+                <strong id="summaryDate">Not selected</strong>
             </div>
             <div class="summary-row total">
                 <span>Total Amount</span>
@@ -533,11 +642,21 @@ footer {
 </section>
 
 <section class="orders">
-    <div class="section-title">
-        <h2>📋 My Submitted Orders</h2>
-        <p>Your saved pre-orders will appear here.</p>
+    <div class="section-title orders-heading">
+        <div>
+            <h2>📋 My Submitted Orders</h2>
+            <p>Your saved pre-orders will appear here.</p>
+        </div>
+        <span class="orders-count" id="ordersCount"></span>
     </div>
-    <div id="ordersList"></div>
+    <input
+    type="text"
+    id="orderSearch"
+    placeholder="Search by student name or food..."
+    style="margin-bottom:15px;"
+>
+
+<div id="ordersList"></div>
 </section>
 
 </main>
@@ -548,7 +667,7 @@ footer {
 
 <!-- SUCCESS POPUP -->
 <div class="modal-overlay" id="successModal">
-    <div class="success-modal">
+    <div class="success-modal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
         <div class="success-icon">✓</div>
         <h2 id="successTitle">Order Submitted!</h2>
         <p id="successMessage">Your pre-order has been successfully placed.</p>
@@ -568,8 +687,8 @@ footer {
 
 <!-- CANCEL ORDER CONFIRMATION -->
 <div class="modal-overlay" id="cancelModal">
-    <div class="confirm-modal">
-        <h2>Cancel Order?</h2>
+    <div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="cancelTitle">
+        <h2 id="cancelTitle">Cancel Order?</h2>
         <p>Are you sure you want to cancel this pending order?</p>
 
         <div class="confirm-actions">
@@ -603,21 +722,61 @@ let selectedFood = null;
 let editingOrderId = null;
 let cancellingOrderId = null;
 
-let orders = JSON.parse(localStorage.getItem("canteenOrders")) || [];
-
-// Keep compatibility with orders saved by the earlier version.
-orders = orders.map(order => ({
-    ...order,
-    id: order.id || Date.now() + Math.random(),
-    status: order.status || "Pending"
-}));
-
 const menuGrid = document.getElementById("menuGrid");
 const quantityInput = document.getElementById("quantity");
 const pickupDateInput = document.getElementById("pickupDate");
+const formError = document.getElementById("formError");
+let orders = [];
 
-function saveOrders() {
-    localStorage.setItem("canteenOrders", JSON.stringify(orders));
+try {
+    const savedOrders = JSON.parse(localStorage.getItem("canteenOrders") || "[]");
+    if (!Array.isArray(savedOrders)) {
+        throw new Error("Saved orders are not in the expected format.");
+    }
+
+    orders = savedOrders
+        .filter(order => order && typeof order === "object" &&
+            typeof order.student === "string" && typeof order.food === "string" &&
+            Number.isInteger(Number(order.quantity)) && Number(order.quantity) >= 1 &&
+            Number(order.quantity) <= 50 && Number.isFinite(Number(order.total)) &&
+            typeof order.date === "string")
+        .map((order, index) => ({
+            ...order,
+            id: order.id || Date.now() + index,
+            quantity: Number(order.quantity),
+            total: Number(order.total),
+            status: ["Pending", "Processing", "Completed", "Cancelled"].includes(order.status)
+                ? order.status : "Pending"
+        }));
+} catch (error) {
+    formError.textContent = "Saved orders could not be read from this browser. New orders may not be retained.";
+    console.error("Unable to load saved canteen orders:", error);
+}
+
+function saveOrders(updatedOrders) {
+    try {
+        localStorage.setItem("canteenOrders", JSON.stringify(updatedOrders));
+        return true;
+    } catch (error) {
+        formError.textContent = "Your order could not be saved in this browser. Please check available storage and try again.";
+        console.error("Unable to save canteen orders:", error);
+        return false;
+    }
+}
+
+function setFormError(message) {
+    formError.textContent = message;
+}
+
+function localDateString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return year + "-" + month + "-" + day;
+}
+
+function setMinimumPickupDate() {
+    pickupDateInput.min = localDateString(new Date());
 }
 
 function displayMenu() {
@@ -627,10 +786,15 @@ function displayMenu() {
         const card = document.createElement("div");
         card.className = "food-card" +
             (selectedFood && selectedFood.id === food.id ? " selected" : "");
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-pressed", selectedFood && selectedFood.id === food.id ? "true" : "false");
+        card.setAttribute("aria-label", food.name + ", ₱" + food.price.toFixed(2) + ". Select this food.");
 
         const img = document.createElement("img");
         img.src = food.image;
         img.alt = food.name;
+        img.loading = "lazy";
 
         const info = document.createElement("div");
         info.className = "food-info";
@@ -650,8 +814,15 @@ function displayMenu() {
 
         card.addEventListener("click", () => {
             selectedFood = food;
+            setFormError("");
             displayMenu();
             updateSummary();
+        });
+        card.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                card.click();
+            }
         });
 
         menuGrid.appendChild(card);
@@ -659,7 +830,7 @@ function displayMenu() {
 }
 
 function updateSummary() {
-    const quantity = Number(quantityInput.value) || 1;
+    const quantity = Number(quantityInput.value) || 0;
 
     document.getElementById("summaryFood").textContent =
         selectedFood ? selectedFood.name : "None";
@@ -668,6 +839,8 @@ function updateSummary() {
         selectedFood ? "₱" + selectedFood.price.toFixed(2) : "₱0.00";
 
     document.getElementById("summaryQuantity").textContent = quantity;
+    document.getElementById("summaryDate").textContent =
+        pickupDateInput.value || "Not selected";
 
     const total = selectedFood ? selectedFood.price * quantity : 0;
 
@@ -676,19 +849,39 @@ function updateSummary() {
 }
 
 quantityInput.addEventListener("input", updateSummary);
+pickupDateInput.addEventListener("input", updateSummary);
+document.getElementById("studentName").addEventListener("input", () => setFormError(""));
 
 // READ: DISPLAY ORDERS
 function displayOrders() {
     const ordersList = document.getElementById("ordersList");
     ordersList.innerHTML = "";
+    document.getElementById("ordersCount").textContent =
+        orders.length + (orders.length === 1 ? " order saved" : " orders saved");
 
     if (orders.length === 0) {
-        ordersList.innerHTML =
-            '<p class="empty">No orders submitted yet.</p>';
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty";
+        emptyMessage.textContent = "No orders submitted yet.";
+        ordersList.appendChild(emptyMessage);
         return;
     }
 
-    orders.forEach(order => {
+    const searchTerm = document.getElementById("orderSearch").value.toLowerCase().trim();
+    const filteredOrders = orders.filter(order =>
+        order.student.toLowerCase().includes(searchTerm) ||
+        order.food.toLowerCase().includes(searchTerm)
+    );
+
+    if (filteredOrders.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty";
+        emptyMessage.textContent = "No orders match your search.";
+        ordersList.appendChild(emptyMessage);
+        return;
+    }
+
+    filteredOrders.forEach(order => {
         const item = document.createElement("div");
         item.className = "order-item";
 
@@ -705,11 +898,13 @@ function displayOrders() {
         date.textContent = "Pickup: " + order.date;
 
         const total = document.createElement("p");
-        total.textContent = "Total: ₱" + order.total.toFixed(2);
+        total.textContent = "Total: ₱" + Number(order.total).toFixed(2);
 
         const status = document.createElement("span");
-        status.className = "status " + order.status.toLowerCase();
-        status.textContent = order.status;
+        const safeStatus = ["Pending", "Processing", "Completed", "Cancelled"].includes(order.status)
+            ? order.status : "Pending";
+        status.className = "status " + safeStatus.toLowerCase();
+        status.textContent = safeStatus;
 
         info.append(name, food, date, total, status);
 
@@ -719,7 +914,7 @@ function displayOrders() {
         actions.className = "order-actions";
 
         // Only pending orders can be edited or cancelled.
-        if (order.status === "Pending") {
+        if (safeStatus === "Pending") {
             const editButton = document.createElement("button");
             editButton.className = "edit-btn";
             editButton.textContent = "✏ Edit";
@@ -738,44 +933,50 @@ function displayOrders() {
     });
 }
 
+document.getElementById("orderSearch").addEventListener("input", displayOrders);
+
 // CREATE: ADD ORDER / UPDATE: SAVE EDIT
 document.getElementById("orderForm").addEventListener("submit", function(event) {
     event.preventDefault();
+    setFormError("");
 
     const student = document.getElementById("studentName").value.trim();
     const quantity = Number(quantityInput.value);
     const date = pickupDateInput.value;
 
     if (!student) {
-        alert("Please enter your student name.");
+        setFormError("Please enter your name.");
+        document.getElementById("studentName").focus();
         return;
     }
 
     if (!selectedFood) {
-        alert("Please select a food item from the menu.");
+        setFormError("Please select a food item from the menu.");
+        menuGrid.querySelector(".food-card").focus();
         return;
     }
 
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
-        alert("Please enter a quantity between 1 and 50.");
+        setFormError("Enter a whole-number quantity between 1 and 50.");
+        quantityInput.focus();
         return;
     }
 
     if (!date) {
-        alert("Please select a pickup date.");
+        setFormError("Please choose a pickup date.");
+        pickupDateInput.focus();
         return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (new Date(date + "T00:00:00") < today) {
-        alert("Pickup date cannot be in the past.");
+    setMinimumPickupDate();
+    if (date < pickupDateInput.min) {
+        setFormError("Pickup date cannot be in the past.");
+        pickupDateInput.focus();
         return;
     }
 
     const newOrder = {
-        id: editingOrderId !== null ? editingOrderId : Date.now(),
+        id: editingOrderId !== null ? editingOrderId : Date.now() + Math.random(),
         student: student,
         food: selectedFood.name,
         quantity: quantity,
@@ -788,23 +989,26 @@ document.getElementById("orderForm").addEventListener("submit", function(event) 
         const index = orders.findIndex(order => order.id === editingOrderId);
 
         if (index === -1 || orders[index].status !== "Pending") {
-            alert("Only pending orders can be edited.");
+            setFormError("Only pending orders can be edited.");
             resetForm();
             return;
         }
 
-        orders[index] = newOrder;
+        const updatedOrders = orders.slice();
+        updatedOrders[index] = newOrder;
+        if (!saveOrders(updatedOrders)) return;
+        orders = updatedOrders;
         document.getElementById("successTitle").textContent = "Order Updated!";
         document.getElementById("successMessage").textContent =
             "Your pending order has been successfully updated.";
     } else {
-        orders.push(newOrder);
+        const updatedOrders = orders.concat(newOrder);
+        if (!saveOrders(updatedOrders)) return;
+        orders = updatedOrders;
         document.getElementById("successTitle").textContent = "Order Submitted!";
         document.getElementById("successMessage").textContent =
             "Your pre-order has been successfully placed.";
     }
-
-    saveOrders();
 
     document.getElementById("modalFood").textContent = newOrder.food;
     document.getElementById("modalQuantity").textContent = newOrder.quantity;
@@ -812,6 +1016,7 @@ document.getElementById("orderForm").addEventListener("submit", function(event) 
         "₱" + newOrder.total.toFixed(2);
 
     document.getElementById("successModal").classList.add("show");
+    document.querySelector("#successModal .modal-btn").focus();
 
     resetForm();
     displayOrders();
@@ -822,7 +1027,7 @@ function editOrder(id) {
     const order = orders.find(item => item.id === id);
 
     if (!order || order.status !== "Pending") {
-        alert("Only pending orders can be edited.");
+        setFormError("Only pending orders can be edited.");
         return;
     }
 
@@ -837,6 +1042,7 @@ function editOrder(id) {
     document.getElementById("formTitle").textContent = "✏ Edit Your Order";
     document.getElementById("submitBtn").textContent = "Update Order →";
     document.getElementById("cancelEditBtn").style.display = "block";
+    setFormError("");
 
     displayMenu();
     updateSummary();
@@ -852,12 +1058,13 @@ function cancelOrder(id) {
     const order = orders.find(item => item.id === id);
 
     if (!order || order.status !== "Pending") {
-        alert("Only pending orders can be cancelled.");
+        setFormError("Only pending orders can be cancelled.");
         return;
     }
 
     cancellingOrderId = id;
     document.getElementById("cancelModal").classList.add("show");
+    document.querySelector("#cancelModal .cancel-btn").focus();
 }
 
 // CANCEL ORDER: UPDATE STATUS, KEEP ORDER HISTORY
@@ -869,9 +1076,11 @@ function confirmCancelOrder() {
         return;
     }
 
-    order.status = "Cancelled";
-
-    saveOrders();
+    const updatedOrders = orders.map(item =>
+        item.id === cancellingOrderId ? { ...item, status: "Cancelled" } : item
+    );
+    if (!saveOrders(updatedOrders)) return;
+    orders = updatedOrders;
     displayOrders();
 
     if (editingOrderId === order.id) {
@@ -897,6 +1106,7 @@ function resetForm() {
     document.getElementById("formTitle").textContent = "📝 Place Your Order";
     document.getElementById("submitBtn").textContent = "Submit Pre-Order →";
     document.getElementById("cancelEditBtn").style.display = "none";
+    setFormError("");
 
     displayMenu();
     updateSummary();
@@ -910,8 +1120,18 @@ function closeSuccessModal() {
     document.getElementById("successModal").classList.remove("show");
 }
 
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        if (document.getElementById("successModal").classList.contains("show")) {
+            closeSuccessModal();
+        } else if (document.getElementById("cancelModal").classList.contains("show")) {
+            closeCancelModal();
+        }
+    }
+});
+
 // INITIAL DISPLAY
-saveOrders();
+setMinimumPickupDate();
 displayMenu();
 displayOrders();
 updateSummary();
